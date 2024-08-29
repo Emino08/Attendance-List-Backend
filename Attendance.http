@@ -1,0 +1,29 @@
+### GET request to example server
+POST http://192.168.199.61:8000/api/login/
+Content-Type: application/json
+
+{
+    "username": "emino08",
+    "password": "1212"
+}
+###
+GET http://192.168.199.61:8000/api/users/1
+Accept: application/json
+Authorization: Token 3be8d465f079709354ea27f45ad4f8a5c966306c
+###
+GET http://192.168.199.61:8000/api/user-roles
+Accept: application/json
+Authorization: Token 3be8d465f079709354ea27f45ad4f8a5c966306c
+###
+PUT 192.168.199.61:8000/api/users/1/
+Content-Type: application/json
+Authorization: Token 3be8d465f079709354ea27f45ad4f8a5c966306c
+
+ {
+    "username": "emino08",
+    "email": "koromaemmanuel66@gmail.com",
+    "is_password_changed": true,
+   "role": "admin"
+
+  }
+
