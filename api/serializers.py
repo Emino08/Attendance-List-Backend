@@ -22,25 +22,48 @@ class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
 
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         # fields = ['id', 'username', 'email', 'first_name', 'last_name', 'password', 'is_password_changed', 'role']
+#         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_password_changed', 'role']
+#         extra_kwargs = {'password': {'write_only': True}}
+#
+#     def create(self, validated_data):
+#         user = User.objects.create_user(**validated_data)
+#         return user
+#
+#     def update(self, instance, validated_data):
+#         for attr, value in validated_data.items():
+#             if attr == 'password':
+#                 instance.set_password(value)
+#             else:
+#                 setattr(instance, attr, value)
+#         instance.save()
+#         return instance
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        # fields = ['id', 'username', 'email', 'first_name', 'last_name', 'password', 'is_password_changed', 'role']
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_password_changed', 'role']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_password_changed', 'role', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        password = validated_data.pop('password', None)
+        user = User(**validated_data)
+        if password is not None:
+            user.set_password(password)
+        user.save()
         return user
 
     def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
         for attr, value in validated_data.items():
-            if attr == 'password':
-                instance.set_password(value)
-            else:
-                setattr(instance, attr, value)
+            setattr(instance, attr, value)
+        if password is not None:
+            instance.set_password(password)
         instance.save()
         return instance
+
 
 class UserRoleSerializer(serializers.ModelSerializer):
     class Meta:

@@ -9,10 +9,35 @@ from .serializers import UserSerializer, LoginSerializer, UserRoleSerializer, Ye
 from rest_framework.authtoken.models import Token
 
 
+# class LoginView(APIView):
+#     def post(self, request):
+#         username = request.data.get('username')
+#         password = request.data.get('password')
+#
+#         user = authenticate(request, username=username, password=password)
+#
+#         if user is not None:
+#             login(request, user)
+#             token, _ = Token.objects.get_or_create(user=user)
+#             return Response({
+#                 'token': token.key,
+#                 'user': UserSerializer(user).data,
+#             })
+#         else:
+#             # Check if the user exists
+#             if User.objects.filter(username=username).exists():
+#                 return Response({'error': 'Incorrect password'}, status=status.HTTP_401_UNAUTHORIZED)
+#             else:
+#                 return Response({'error': 'User does not exist'}, status=status.HTTP_401_UNAUTHORIZED)
 class LoginView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
+
+        # Debug: Print or log the username and password to verify they are correct
+        print(f"Attempting login with username: {username} and password: {password}")
 
         user = authenticate(request, username=username, password=password)
 
@@ -29,6 +54,7 @@ class LoginView(APIView):
                 return Response({'error': 'Incorrect password'}, status=status.HTTP_401_UNAUTHORIZED)
             else:
                 return Response({'error': 'User does not exist'}, status=status.HTTP_401_UNAUTHORIZED)
+
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
